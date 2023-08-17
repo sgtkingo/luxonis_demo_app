@@ -1,0 +1,30 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TOP QUOTES</title>
+</head>
+<body>
+    <h1 style="text-align: center;">TOP from <a src="https://quotes.toscrape.com/">quotes.toscrape.com</a></h1>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Text</th>
+                    <th>Author</th>
+                    <th>Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item['text'] }}</td>
+                    <td>{{ item['author'] }}</td>
+                    <td>{{ item['tags'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

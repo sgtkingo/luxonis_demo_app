@@ -1,21 +1,21 @@
-import time
 from flask import Flask, render_template
+from engine.db import PostgresDbConnector
+from engine import db
 
 app = Flask(__name__)
+local_db = PostgresDbConnector(db.DB_PARAMS)
 
 def fetch_data():
-    # time.sleep(2.5)
-    return [
-        {'title':'Item 1', 'img':'https://cdn.pixabay.com/photo/2018/06/26/11/35/letter-3499237_960_720.png'},
-        {'title':'Item 2', 'img':'https://cdn.pixabay.com/photo/2018/06/26/11/35/letter-3499237_960_720.png'},
-        {'title':'Item 3', 'img':'https://cdn.pixabay.com/photo/2018/06/26/11/35/letter-3499237_960_720.png'}
-    ]
+    local_db.init()
+    data = local_db.load_all_data()
+    local_db.close()
+    return data
             
-
 @app.route('/')
-def init():
-    data=fetch_data()
-    return render_template('index.html', items=data)
+def render_index():
+    data = fetch_data()
+    #return render_template('index.html', items=data)
+    return render_template('test.html', items=data)
 
 if __name__ == '__main__':
     app.run()
