@@ -1,0 +1,28 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>500 TOP</title>
+</head>
+<body>
+    <h1 style="text-align: center;">TOP 500 from <a>sreality.cz</a>></h1>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item['title'] }}</td>
+                    <td><img src= {{ item['img'] }} width="300" height="300"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
