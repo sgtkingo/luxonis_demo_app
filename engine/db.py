@@ -4,7 +4,7 @@ import json
 
 # Database connection parameters
 DB_PARAMS = {
-    'dbname': 'sreality_db',
+    'dbname': 'localdb',
     'user': 'postgres',
     'password': 'pass12345*',
     'host': 'localhost',  # Typically 'localhost'

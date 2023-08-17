@@ -1,5 +1,18 @@
 services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: localdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass12345*
+    ports:
+      - "5432:5432" 
   web:
     build: .
     ports:
       - "8000:5000"
+    volumes:
+      - .:/code
+    environment:
+      FLASK_DEBUG: "true"           
