@@ -26,6 +26,7 @@ class TestSpider(scrapy.Spider):
     start_urls = [
         "https://quotes.toscrape.com/page/1/",
     ]
+    max_pages = 5
 
     def parse(self, response):
         for quote in response.css("div.quote"):
@@ -34,3 +35,9 @@ class TestSpider(scrapy.Spider):
                 "author": quote.css("small.author::text").get(),
                 "tags": quote.css("div.tags a.tag::text").getall(),
             }
+
+        next_page = response.css("li.next a::attr(href)").get()
+        if next_page is not None and self.max_pages > 0:
+            print(f'-> next page found! {self.max_pages}/5')
+            self.max_pages -= 1
+            yield response.follow(next_page, callback=self.parse)            

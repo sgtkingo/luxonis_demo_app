@@ -1,26 +1,42 @@
 import psycopg2
 from psycopg2 import sql
 import json
+import time
 
 # Database connection parameters
 DB_PARAMS = {
-    'dbname': 'localdb',
+    'dbname': 'postgres',
     'user': 'postgres',
     'password': 'pass12345*',
-    'host': 'localhost',  # Typically 'localhost'
-    'port': '5432'   # Typically 5432
+    'host': 'db',  # By docker container name
+    'port' : '5432',
 }
 
+DB_CUSTOM_PARAMS = {
+    'default_table' : 'data_table'
+}
+
+#My custom postgres db connector 
 class PostgresDbConnector:
     _db_params = {}
+    _custom_params = {}
     connection = None
 
-    def __init__(self, db_params:dict):
+    def __init__(self, db_params:dict, custom_params:dict):
         self._db_params = db_params
+        self._custom_params = custom_params
 
     def init(self):
-        self.connection = self.create_connection()
-        print("Database Initialization done!")
+        counter = 10
+        while self.connection is None and counter > 0:
+            print(f"Traing to connect database... {counter}/10")
+            time.sleep(1)
+            counter -=1
+            self.connection = self.create_connection()
+        if self.connection is None:
+            raise psycopg2.DatabaseError("Initialization failed!")
+        else:
+            print("Database Initialization done!")
     
     def create_connection(self):
         try:
@@ -33,8 +49,8 @@ class PostgresDbConnector:
     
     def create_table(self):
         try:
-            create_table_query = '''
-                CREATE TABLE IF NOT EXISTS data_table (
+            create_table_query = f'''
+                CREATE TABLE IF NOT EXISTS {self._custom_params.get('default_table')} (
                     id serial PRIMARY KEY,
                     data JSONB
                 );
@@ -49,7 +65,7 @@ class PostgresDbConnector:
             raise e
         
     def insert_data(self, data:dict):
-        insert_query = sql.SQL('INSERT INTO data_table (data) VALUES (%s);')
+        insert_query = sql.SQL(f"INSERT INTO {self._custom_params.get('default_table')} (data) VALUES (%s);")
         json_data = json.dumps(data)
         try:
             cursor = self.connection.cursor()
@@ -61,7 +77,7 @@ class PostgresDbConnector:
             print(e)
 
     def load_all_data(self):
-        select_query = sql.SQL('SELECT * FROM data_table;')
+        select_query = sql.SQL(f"SELECT * FROM {self._custom_params.get('default_table')};")
         data_list = []
         try:
             cursor = self.connection.cursor()

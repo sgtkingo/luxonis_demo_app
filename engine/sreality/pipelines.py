@@ -11,7 +11,7 @@ from engine.db import PostgresDbConnector
 from engine import db
 
 class DatabasePipeline:
-    local_db = PostgresDbConnector(db.DB_PARAMS)
+    local_db = PostgresDbConnector(db.DB_PARAMS, db.DB_CUSTOM_PARAMS)
 
     def open_spider(self, spider):
         print(f"Opening {spider.name} spider...")
