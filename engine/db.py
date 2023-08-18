@@ -84,10 +84,11 @@ class PostgresDbConnector:
             cursor.execute(select_query)
             rows = cursor.fetchall()
             for row in rows:
-                print("ID:", row[0])
-                print("Data:", row[1])
-                print("-" * 20)
+                #print("ID:", row[0])
+                #print("Data:", row[1])
+                #print("-" * 20)
                 data_list.append(row[1])
+            print(f"{len(data_list)} records loads...")
             return data_list
         except psycopg2.Error as e:
             print("Error: Unable to load data")
