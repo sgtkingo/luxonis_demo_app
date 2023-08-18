@@ -3,7 +3,7 @@ from engine.db import PostgresDbConnector
 from engine import db
 
 app = Flask(__name__)
-local_db = PostgresDbConnector(db.DB_PARAMS)
+local_db = PostgresDbConnector(db.DB_PARAMS, db.DB_CUSTOM_PARAMS)
 
 def fetch_data():
     local_db.init()

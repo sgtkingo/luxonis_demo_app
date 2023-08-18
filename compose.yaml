@@ -1,18 +1,27 @@
-services:
-  postgres:
+services: 
+  db:
     image: postgres:latest
-    container_name: postgres_db
+    restart: always
     environment:
-      POSTGRES_DB: localdb
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: pass12345*
     ports:
-      - "5432:5432" 
+      - "5987:5432" 
+    volumes:
+      - ./init-scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    #shoud be on default shared network automaticly, no need to define custom network 
+
   web:
     build: .
-    ports:
-      - "8000:5000"
-    volumes:
-      - .:/code
     environment:
-      FLASK_DEBUG: "true"           
+      FLASK_DEBUG: "true"   
+      FLASK_APP: app.py
+      FLASK_RUN_HOST: 0.0.0.0        
+    ports:
+      - "8000:5000"      
+    volumes:
+      - .:/code      
+    depends_on:
+      - db       
+    #shoud be on default shared network automaticly, no need to define custom network   
