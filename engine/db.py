@@ -97,6 +97,7 @@ class PostgresDbConnector:
 
     def close(self):
         self.connection.close()
+        self.connection = None
         print("Connection closed...")
 
 """
