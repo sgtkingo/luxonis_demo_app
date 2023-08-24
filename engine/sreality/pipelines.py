@@ -24,10 +24,10 @@ class DatabasePipeline:
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        if spider.name == "test":
+        try:
             self.local_db.insert_data(dict(adapter))
             print(dict(adapter))
             return item
-        else:
+        except:
             raise DropItem()
         

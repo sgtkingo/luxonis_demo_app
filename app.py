@@ -16,8 +16,8 @@ def fetch_data():
 @app.route('/')
 def render_index():
     data = fetch_data()
-    #return render_template('index.html', items=data)
-    return render_template('test.html', items=data)
+    return render_template('index.html', items=data)
+    #return render_template('test.html', items=data)
 
 if __name__ == '__main__':
     app.run()
