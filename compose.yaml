@@ -1,4 +1,5 @@
 services: 
+  #shoud be on default shared network automaticly, no need to define custom network 
   db:
     image: postgres:latest
     restart: always
@@ -10,7 +11,13 @@ services:
       - "5987:5432" 
     volumes:
       - ./init-scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
-    #shoud be on default shared network automaticly, no need to define custom network 
+  
+  splash:
+    image: scrapinghub/splash
+    restart: always
+    command: ["splash", "--disable-private-mode"]
+    ports:
+      - "8010:8050"
 
   web:
     build: .
@@ -24,4 +31,4 @@ services:
       - .:/code      
     depends_on:
       - db       
-    #shoud be on default shared network automaticly, no need to define custom network   
+      - splash

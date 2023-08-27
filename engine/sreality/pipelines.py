@@ -26,7 +26,6 @@ class DatabasePipeline:
         adapter = ItemAdapter(item)
         try:
             self.local_db.insert_data(dict(adapter))
-            print(dict(adapter))
             return item
         except:
             raise DropItem()

@@ -3,27 +3,17 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Your Page Title</title>
+    <title>TOP 500</title>
     <!-- Link custom CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" type="text/css">
-
-    <!-- Using jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <!-- Using custom JS -->
-    <script src="{{ url_for('static', filename='updater.js') }}"></script>
 </head>
 <body>
     <h1 style="text-align: center; font-family: 'Courier New', Courier, monospace;">
         TOP 500 from 
         <a href="https://www.sreality.cz/hledani/prodej/byty" target="_blank">sreality.cz</a>
     </h1>
-    <div class="progress-container" id="progress-container">
-        Scraping webpage... Please wait!
-        <span id="progress-value">{{ progress_value }} %</span>
-        <span id="progress-status">{{ progress_status }}</span>
-    </div>
     
-    <div class="table-container" id="table-container" hidden>
+    <div class="table-container" id="table-container">
         <table>
             <thead>
                 <tr>

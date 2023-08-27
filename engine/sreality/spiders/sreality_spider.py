@@ -1,11 +1,8 @@
-from pathlib import Path
 import time
 import scrapy
 import scrapy.exceptions
 import scrapy_splash
 from scrapy_splash import SplashRequest
-from engine import signals
-from engine import comm
 
 script = """
 function main(splash)
@@ -27,7 +24,6 @@ function main(splash)
 end
 """
 
-
 # Splash settings
 SPLASH_ARGS = {
     'wait': 0.1,  # Adjust based on page complexity   
@@ -38,7 +34,11 @@ SPLASH_ARGS = {
 
 class SrealitySpider(scrapy.Spider):
     name = "sreality"
-    counter = 50
+
+    total = 50
+    counter = 0
+    progress = 0
+
     page_counter = 0
     baseurl = 'https://www.sreality.cz/hledani/prodej/byty?strana='
 
@@ -47,8 +47,8 @@ class SrealitySpider(scrapy.Spider):
         return f'{self.baseurl}{self.page_counter}'
 
     def start_requests(self):
-        signals.SCRAPY_STATUS = signals.SCRAPY_STATUS_ENUM.READY
-        signals.SCRAPY_PROCESS = 0.0
+        print("Waiting for Splash to load...")
+        time.sleep(3)
 
         url = self.follow_url()
         yield SplashRequest(
@@ -63,18 +63,20 @@ class SrealitySpider(scrapy.Spider):
         #save response as HTML file
         #Path(f"sreality.html").write_bytes(response.body)
         #start parsing
-        signals.SCRAPY_STATUS = signals.SCRAPY_STATUS_ENUM.RUNNING
         for property_item in response.css("div.property.ng-scope"):
-                self.counter-=1
-                signals.SCRAPY_PROCESS = int((self.counter/50-1.0)*-100)
-                yield {
-                    "title": property_item.css("span.name.ng-binding::text").get(),
-                    "img": property_item.css("img").attrib.get('src')
-                }            
+                self.progress = int((self.counter/self.total)*100)
+                print(f"Progress: {self.progress} %")
+
+                self.counter+=1
+                if self.counter <= self.total:
+                    yield {
+                        "title": property_item.css("span.name.ng-binding::text").get(),
+                        "img": property_item.css("img").attrib.get('src')
+                    } 
+                else:
+                    break           
         
-        if self.counter > 0:
-            result = comm.post_signals()
-            print('signals send ->' + str(result))
+        if self.counter <= self.total:
             next_page = self.follow_url()
             print('next page ->' + next_page)
             try:
@@ -86,10 +88,4 @@ class SrealitySpider(scrapy.Spider):
                     slot_policy=scrapy_splash.SlotPolicy.SCRAPY_DEFAULT
                 )
             except:
-                signals.SCRAPY_STATUS = signals.SCRAPY_STATUS_ENUM.ERROR
                 raise scrapy.exceptions.CloseSpider('Next page doesnt exist')
-        else:
-            signals.SCRAPY_STATUS = signals.SCRAPY_STATUS_ENUM.DONE
-            signals.SCRAPY_PROCESS = 100.0
-            result = comm.post_signals()
-            print('signals send ->' + str(result))

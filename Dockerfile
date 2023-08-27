@@ -6,5 +6,4 @@ RUN apk add --no-cache linux-headers
 COPY . .
 RUN pip install -r requirements.txt
 EXPOSE 5000
-EXPOSE 5432
-CMD ["sh", "-c", "cd ./engine/ && scrapy crawl test && cd .. && flask run"]
+CMD ["sh", "-c", "cd ./engine/ && scrapy crawl sreality && cd .. && flask run"]

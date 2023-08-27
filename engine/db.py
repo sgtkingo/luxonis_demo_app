@@ -8,7 +8,7 @@ DB_PARAMS = {
     'dbname': 'postgres',
     'user': 'postgres',
     'password': 'pass12345*',
-    'host': 'localhost',  # By docker container name
+    'host': 'db',  # By docker container name
     'port' : '5432',
 }
 
@@ -71,7 +71,6 @@ class PostgresDbConnector:
             cursor = self.connection.cursor()
             cursor.execute(insert_query, (json_data,))
             self.connection.commit()
-            print("Data inserted successfully")
         except psycopg2.Error as e:
             print("Error: Unable to insert data")
             print(e)
