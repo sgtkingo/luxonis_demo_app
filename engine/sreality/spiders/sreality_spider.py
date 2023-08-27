@@ -35,7 +35,7 @@ SPLASH_ARGS = {
 class SrealitySpider(scrapy.Spider):
     name = "sreality"
 
-    total = 50
+    total = 500
     counter = 0
     progress = 0
 
