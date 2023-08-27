@@ -4,19 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Your Page Title</title>
-
     <!-- Link custom CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" type="text/css">
+
+    <!-- Using jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <!-- Using custom JS -->
+    <script src="{{ url_for('static', filename='updater.js') }}"></script>
 </head>
 <body>
     <h1 style="text-align: center; font-family: 'Courier New', Courier, monospace;">
         TOP 500 from 
-        <a href="https://www.sreality.cz/" target="_blank">sreality.cz</a>
+        <a href="https://www.sreality.cz/hledani/prodej/byty" target="_blank">sreality.cz</a>
     </h1>
-    <div class="table-container">
+    <div class="progress-container" id="progress-container">
+        Scraping webpage... Please wait!
+        <span id="progress-value">{{ progress_value }} %</span>
+        <span id="progress-status">{{ progress_status }}</span>
+    </div>
+    
+    <div class="table-container" id="table-container" hidden>
         <table>
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Title</th>
                     <th>Image</th>
                 </tr>
@@ -24,6 +35,7 @@
             <tbody>
                 {% for item in items %}
                 <tr>
+                    <td>{{ item['id'] }}</td>
                     <td>{{ item['title'] }}</td>
                     <td><img src= {{ item['img'] }} width="300" height="300"></td>
                 </tr>

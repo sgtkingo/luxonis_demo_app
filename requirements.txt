@@ -1,3 +1,5 @@
 flask
+requests
 scrapy
+scrapy_splash
 psycopg2-binary

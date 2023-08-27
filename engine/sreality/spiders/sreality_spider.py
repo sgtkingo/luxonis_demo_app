@@ -4,6 +4,8 @@ import scrapy
 import scrapy.exceptions
 import scrapy_splash
 from scrapy_splash import SplashRequest
+from engine import signals
+from engine import comm
 
 script = """
 function main(splash)
@@ -36,7 +38,7 @@ SPLASH_ARGS = {
 
 class SrealitySpider(scrapy.Spider):
     name = "sreality"
-    counter = 500
+    counter = 50
     page_counter = 0
     baseurl = 'https://www.sreality.cz/hledani/prodej/byty?strana='
 
@@ -45,6 +47,9 @@ class SrealitySpider(scrapy.Spider):
         return f'{self.baseurl}{self.page_counter}'
 
     def start_requests(self):
+        signals.SCRAPY_STATUS = signals.SCRAPY_STATUS_ENUM.READY
+        signals.SCRAPY_PROCESS = 0.0
+
         url = self.follow_url()
         yield SplashRequest(
             url, 
@@ -56,20 +61,20 @@ class SrealitySpider(scrapy.Spider):
 
     def parse(self, response):
         #save response as HTML file
-        Path(f"sreality.html").write_bytes(response.body)
+        #Path(f"sreality.html").write_bytes(response.body)
         #start parsing
+        signals.SCRAPY_STATUS = signals.SCRAPY_STATUS_ENUM.RUNNING
         for property_item in response.css("div.property.ng-scope"):
-            print(self.counter)
-            # print("title: " + property_item.css("span.name.ng-binding::text").get())
-            # print("img: " + property_item.css("img").attrib.get('src'))
-            if self.counter > 0:
                 self.counter-=1
+                signals.SCRAPY_PROCESS = int((self.counter/50-1.0)*-100)
                 yield {
                     "title": property_item.css("span.name.ng-binding::text").get(),
                     "img": property_item.css("img").attrib.get('src')
                 }            
         
         if self.counter > 0:
+            result = comm.post_signals()
+            print('signals send ->' + str(result))
             next_page = self.follow_url()
             print('next page ->' + next_page)
             try:
@@ -81,4 +86,10 @@ class SrealitySpider(scrapy.Spider):
                     slot_policy=scrapy_splash.SlotPolicy.SCRAPY_DEFAULT
                 )
             except:
+                signals.SCRAPY_STATUS = signals.SCRAPY_STATUS_ENUM.ERROR
                 raise scrapy.exceptions.CloseSpider('Next page doesnt exist')
+        else:
+            signals.SCRAPY_STATUS = signals.SCRAPY_STATUS_ENUM.DONE
+            signals.SCRAPY_PROCESS = 100.0
+            result = comm.post_signals()
+            print('signals send ->' + str(result))

@@ -84,7 +84,9 @@ class PostgresDbConnector:
             cursor.execute(select_query)
             rows = cursor.fetchall()
             for row in rows:
-                data_list.append(row[1])
+                data = dict(row[1])
+                data['id'] = row[0]
+                data_list.append(data)
             print(f"{len(data_list)} records loads...")
             return data_list
         except psycopg2.Error as e:
@@ -97,13 +99,13 @@ class PostgresDbConnector:
         self.connection = None
         print("Connection closed...")
 
+
 """
 if __name__ == "__main__":
-    db = PostgresDbConnector(db_params)
+    db = PostgresDbConnector(DB_PARAMS, DB_CUSTOM_PARAMS)
     db.init()
 
-    json_data = {'key1': 'value1', 'key2': 'value2'}
-    db.insert_data(json_data)
     all_data= db.load_all_data()
     db.close()
 """
+
