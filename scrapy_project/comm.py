@@ -1,7 +1,7 @@
 import requests
-from engine import signals
+from scrapy_project import signals
 
-flask_url = 'http://localhost:5000'  # Replace with your Flask server's URL
+flask_url = 'http://web:5000'  # Flask server's URL
 
 def post_signals():
     signals_data = {'progress_value': signals.SCRAPY_PROCESS, 'progress_status': str(signals.SCRAPY_STATUS)}

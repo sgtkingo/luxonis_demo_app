@@ -1,5 +1,4 @@
-flask
-requests
 scrapy
 scrapy_splash
+requests
 psycopg2-binary

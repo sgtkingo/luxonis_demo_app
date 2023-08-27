@@ -7,8 +7,8 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
-from engine.db import PostgresDbConnector
-from engine import db
+from scrapy_project.db import PostgresDbConnector
+from scrapy_project import db
 
 class DatabasePipeline:
     local_db = PostgresDbConnector(db.DB_PARAMS, db.DB_CUSTOM_PARAMS)

@@ -1,11 +1,11 @@
 from pathlib import Path
+from scrapy_project import signals
+from scrapy_project import comm
 import time
 import scrapy
 import scrapy.exceptions
 import scrapy_splash
 from scrapy_splash import SplashRequest
-from engine import signals
-from engine import comm
 
 script = """
 function main(splash)
@@ -47,8 +47,13 @@ class SrealitySpider(scrapy.Spider):
         return f'{self.baseurl}{self.page_counter}'
 
     def start_requests(self):
+        #wait for flask and splash
+        time.sleep(5)      
+          
         signals.SCRAPY_STATUS = signals.SCRAPY_STATUS_ENUM.READY
         signals.SCRAPY_PROCESS = 0.0
+        result = comm.post_signals()
+        print('signals send ->' + str(result))
 
         url = self.follow_url()
         yield SplashRequest(

@@ -8,7 +8,7 @@ DB_PARAMS = {
     'dbname': 'postgres',
     'user': 'postgres',
     'password': 'pass12345*',
-    'host': 'localhost',  # By docker container name
+    'host': 'db',  # By docker container name
     'port' : '5432',
 }
 

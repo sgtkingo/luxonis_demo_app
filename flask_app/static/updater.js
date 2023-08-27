@@ -15,9 +15,22 @@ $( document ).ready(function() {
 
                 if (response.progress_status === "Status.DONE"){
                     clearInterval(timer);
+                    $("#progress-container").hide();
+                    fetchData();
                 }
             }
         })
     }    
+
+    function fetchData() {
+        $.ajax({
+            url: '/api/get_data',  // Flask route to fetch data
+            type: 'GET',
+            success: function(response) {
+                console.log(response.data)
+            }
+        });
+        $("#table-container").show();
+    }      
 });
 

@@ -43,7 +43,7 @@ ROBOTSTXT_OBEY = True
 #}
 
 #Settings for Splash extension
-SPLASH_URL = 'http://localhost:8050'
+SPLASH_URL = 'http://splash:8050'
 
 # Use splash's dupefilter instead of default
 DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'

@@ -1,4 +1,5 @@
 services: 
+  #all servivces shoud be on default shared network automaticly, no need to define custom network 
   db:
     image: postgres:latest
     restart: always
@@ -10,10 +11,23 @@ services:
       - "5987:5432" 
     volumes:
       - ./init-scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
-    #shoud be on default shared network automaticly, no need to define custom network 
+
+  splash:
+    image: scrapinghub/splash
+    command: ["splash", "--disable-private-mode"]
+    ports:
+      - "8000:8050"
+
+  scrapy:
+    build: ./scrapy_project
+    volumes:
+      - ./scrapy_project:/scrapy_project
+    depends_on:
+      - db
+      - splash        
 
   web:
-    build: .
+    build: ./flask_app
     environment:
       FLASK_DEBUG: "true"   
       FLASK_APP: app.py
@@ -21,7 +35,7 @@ services:
     ports:
       - "8080:5000"      
     volumes:
-      - .:/code      
+      - ./flask_app:/flask_app      
     depends_on:
-      - db       
-    #shoud be on default shared network automaticly, no need to define custom network   
+      - db
+      - splash         
