@@ -47,8 +47,24 @@ class PostgresDbConnector:
             print(e)
             return None
     
+    def drop_table(self):
+        try:
+            drop_table_query = f'''
+                DROP TABLE {self._custom_params.get('default_table')};
+            '''
+            cursor = self.connection.cursor()
+            cursor.execute(drop_table_query)
+            self.connection.commit()
+            print("Table droped successfully")
+        except psycopg2.Error as e:
+            print("Error: Unable to drop the table")
+            print(e)
+
     def create_table(self):
         try:
+            #Drop old table if exist
+            self.drop_table()
+            #Re-create table query
             create_table_query = f'''
                 CREATE TABLE IF NOT EXISTS {self._custom_params.get('default_table')} (
                     id serial PRIMARY KEY,
@@ -99,12 +115,13 @@ class PostgresDbConnector:
         print("Connection closed...")
 
 
-"""
+
 if __name__ == "__main__":
     db = PostgresDbConnector(DB_PARAMS, DB_CUSTOM_PARAMS)
     db.init()
+    db.create_table()
 
     all_data= db.load_all_data()
     db.close()
-"""
+
 
